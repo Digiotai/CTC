@@ -1,39 +1,153 @@
-# Importing the libraries
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
 import numpy as np
-import matplotlib.pyplot as plt
+
+
+# In[2]:
+
+
 import pandas as pd
-import pickle
 
-dataset = pd.read_csv('payscale.csv')
 
-dataset['experience'].fillna(0, inplace=True)
+# In[3]:
 
-dataset['test_score'].fillna(dataset['test_score'].mean(), inplace=True)
 
-X = dataset.iloc[:, :3]
+Dataset = pd.read_csv(r'C:/Users/User/payscale.csv')
 
-#Converting words to integer values
-def convert_to_int(word):
-    word_dict = {'one':1, 'two':2, 'three':3, 'four':4, 'five':5, 'six':6, 'seven':7, 'eight':8,
-                'nine':9, 'ten':10, 'eleven':11, 'twelve':12, 'zero':0, 0: 0}
-    return word_dict[word]
 
-X['experience'] = X['experience'].apply(lambda x : convert_to_int(x))
+# In[4]:
 
-y = dataset.iloc[:, -1]
 
-#Splitting Training and Test Set
-#Since we have a very small dataset, we will train our model with all availabe data.
+Dataset.head()
+
+
+# In[5]:
+
+
+X = Dataset.iloc[:,:-1].values
+
+
+# In[6]:
+
+
+y = Dataset.iloc[:,1].values
+
+
+# In[7]:
+
+
+import matplotlib.pyplot as plt
+
+
+# In[8]:
+
+
+get_ipython().run_line_magic('matplotlib', 'inline')
+plt.xlabel("WEX")
+plt.ylabel("CTC")
+plt.scatter(X,y,color='red',marker='+')
+
+
+# In[9]:
+
+
+from sklearn.model_selection import train_test_split
+X_train,X_test, y_train, y_test = train_test_split(X,y,test_size = 0.25)
+
+
+# In[10]:
+
 
 from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
+regressor.fit(X_train,y_train)
 
-#Fitting model with trainig data
-regressor.fit(X, y)
 
-# Saving model to disk
-pickle.dump(regressor, open('model.pkl','wb'))
+# In[11]:
 
-# Loading model to compare the results
-model = pickle.load(open('model.pkl','rb'))
-print(model.predict([[2, 9, 6]]))
+
+regressor.score(X_test,y_test)
+
+
+# In[12]:
+
+
+regressor.score(X_train,y_train)
+
+
+# In[13]:
+
+
+y = regressor.predict(X_test)
+
+
+# In[14]:
+
+
+df  = pd.DataFrame(X_test)
+df["CTC "] = y
+df["Actual CTC"] = y_test
+df.columns = ["WEX" , "PREDICTED CTC", "ACTUAL CTC"]
+
+
+# In[15]:
+
+
+df
+
+
+# In[16]:
+
+
+from sklearn import metrics
+print(np.sqrt(metrics.mean_squared_error(y_test,y)))
+
+
+# In[22]:
+
+
+from sklearn.metrics import  r2_score
+print(r2_score(y_test,y))
+
+
+# In[23]:
+
+
+regressor.intercept_
+
+
+# In[24]:
+
+
+regressor.coef_
+
+
+# In[26]:
+
+
+y = 10578+13711*4
+
+
+# In[27]:
+
+
+y
+
+
+# In[30]:
+
+
+pkl_filename = "LG.pkl"
+with open(pkl_filename, 'wb') as file:
+    pickle.dump(regressor, file)
+
+
+# In[ ]:
+
+
+
+
