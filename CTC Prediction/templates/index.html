@@ -64,7 +64,7 @@ a{text-decoration:none;color:white;}
 
      <!-- Main Input For Receiving Query to our ML -->
     <form action="{{ url_for('predict')}}"method="post">
-    	<input type="text" name="experience" placeholder="Work Experience(0<,=>10)" required="required" />
+    	<input type="text" name="experience" placeholder="Work Experience(0<,=>10)" required="required" color: "blue" />
         
         <button type="submit" class="btn btn-primary btn-block btn-large">CTC Prediction</button>
     </form>
